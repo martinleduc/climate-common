@@ -471,20 +471,6 @@ def testcolorcycle(nc):
 
 ################## Fonction diagnostiques ########################
 
-#def tvar(field):
-
-def wda(data,t,lat):
-    # Weighted domain average
-
-    x0=0.
-    for j in range(0,data.shape[2]):
-        wj=(np.pi/200.)*np.cos(lat[j]*np.pi/180)
-        #print wi
-        
-        for i in range(0,data.shape[1]):            
-            x0=x0+wj*data[t][j][i]
-
-    return x0/100.
 
 def diagemi(ncfile):
     
