@@ -14,12 +14,9 @@ def cpcdf(infile,outfile):
     # Copy input file to output
     os.system("cp "+infile+" "+outfile)
 
-    
-
 
 def genco2ccn(infile,outfile,exp):
     ''' Generate 1%-increase of CO2 ccn and make nc file to force the model.'''
-
     
     cpcdf(infile,outfile)
 
