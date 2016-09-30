@@ -6,10 +6,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from rpn.rpn import RPN
 from rpn.domains.rotated_lat_lon import RotatedLatLon
+import numpy as np
 
-def plotrcm(data,lon,lat,clevs,units='',title=''):
-    # plot rainfall from NWS using special precipitation
-    # colormap used by the NWS, and included in basemap.
+def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
+    '''Plot RCMdata on a map where
+    - data/lon/lat are 2D arrays of the same size
+    - clevs: can be an integer for the number of contours between min and max or a list of values.'''
 
 
     # create figure and axes instances
@@ -17,40 +19,21 @@ def plotrcm(data,lon,lat,clevs,units='',title=''):
     ax = fig.add_axes([0.1,0.1,0.8,0.8])
     # create polar stereographic Basemap instance.
 
-    vv='pr'
-    if vv=='tas':
-        custcmap=plt.get_cmap('Reds')
-    elif vv=='pr':
-        custcmap=plt.get_cmap('Blues')
+    
+    custcmap=plt.get_cmap(cmap)        
+
+
+    if isinstance(clevs, int):
+        dmin=np.min(data)
+        dmax=np.max(data)
+        delbin=(dmax-dmin)/(clevs)
+        clevs=np.arange(dmin,dmax+delbin,delbin)
     
     
     if lon[0,0] < -60.:
         domain='QC'
-
-
-
-        # My try
-        # m = Basemap(projection='lcc', width=5000000, height=5000000,
-        #             lat_1=45., lat_2=55, lat_0=48, lon_0=-70.,
-        #             resolution = 'l')
-        # SEB params
-        # m = Basemap(projection='lcc', width=2800000, height=2200000,
-        #                       lat_1=45., lat_2=55, lat_0=53, lon_0=-70.,
-        #                       resolution = 'l')        
-
-        
     else:
         domain='EU'
-        crnrs=[-6.981536865234375,
-               29.427963256835938,
-               39.913631439208984,
-               64.165000915527344]
-        m = Basemap(llcrnrlon=crnrs[0],llcrnrlat=crnrs[1],urcrnrlon=crnrs[2],urcrnrlat=crnrs[3],
-                    projection='lcc', 
-                    lat_1=48.97, lat_2=49.97, lat_0=48.97, lon_0=18.0,
-                    resolution = 'l')
-
-    
 
     m = getbasemapfromRPN(domain)
 
@@ -68,14 +51,7 @@ def plotrcm(data,lon,lat,clevs,units='',title=''):
     m.drawmeridians(meridians,labels=[0,0,0,1],fontsize=10)
 
     ny = data.shape[0]; nx = data.shape[1]
-    #lons, lats = m.makegrid(nx, ny) # get lat/lons of ny by nx evenly space grid.
     x, y = m(lon, lat) # compute map proj coordinates.
-    # draw filled contours.
-    #clevs = [0,1,2.5,5,7.5,10,15,20,30]
-    #clevs = np.arange(0,36,2)
-    #cs = m.contourf(x,y,data,clevs)
-    #cs = m.contourf(x,y,data,clevs,cmap=cm.s3pcpn)
-    #cs = m.contourf(x,y,data,clevs,cmap=cm.YlOrRd)
     cs = m.contourf(x,y,data,clevs,cmap=custcmap)
     # add colorbar.
     cbar = m.colorbar(cs,location='bottom',pad="5%")
@@ -87,7 +63,8 @@ def plotrcm(data,lon,lat,clevs,units='',title=''):
 
 
 def getbasemapfromRPN(domain):
-    
+    '''Construct basemap object from raw model output file.'''
+
     vname='MY'
     if domain is 'QC':
         path='/exec/leduc/ClimEx-TINV/kay/pm1950010100_00000000p'

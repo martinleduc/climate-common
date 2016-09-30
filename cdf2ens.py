@@ -1,3 +1,4 @@
+'''Tools to fetch into a database of netcdf files.'''
 import os
 import numpy as np
 import fnmatch
