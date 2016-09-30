@@ -1,7 +1,7 @@
 from netCDF4 import Dataset
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import rcm as rcm
+import rcm
 reload(rcm)
 
 sourcedir='/exec/leduc/ClimEx/'

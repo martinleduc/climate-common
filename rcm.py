@@ -32,10 +32,34 @@ def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
     
     if lon[0,0] < -60.:
         domain='QC'
+
+        lon0= 83.0
+        lon_0= -97.0
+        o_lon_p= 180.0
+        o_lat_p= 42.5
+        llcrnrlon= 260.754
+        llcrnrlat= 30.1256
+        urcrnrlon= 333.256
+        urcrnrlat= 52.8049
+
     else:
         domain='EU'
+        
+        lon0= -162.0
+        lon_0= -342.0
+        o_lon_p= 180.0
+        o_lat_p= 39.25
+        llcrnrlon= 350.983
+        llcrnrlat= 24.4208
+        urcrnrlon= 51.9427
+        urcrnrlat= 66.2037
 
-    m = getbasemapfromRPN(domain)
+
+    m=Basemap(projection="rotpole", lon_0=lon0 - 180, o_lon_p=o_lon_p, o_lat_p=o_lat_p,
+              llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat,
+              urcrnrlon=urcrnrlon, urcrnrlat=urcrnrlat)
+
+    #m = getbasemapfromRPN(domain)
 
     # draw coastlines, state and country boundaries, edge of map.
     m.drawcoastlines()
@@ -88,5 +112,28 @@ def getbasemapfromRPN(domain):
 
     #Get the basemap object for the projection and domain defined by the coordinates
     b = rll.get_basemap_object_for_lons_lats(lons2d, lats2d)
-        
+
+    # Parameters to call Basemap
+    # Basemap(projection="rotpole", lon_0=lon0 - 180, o_lon_p=o_lon_p, o_lat_p=o_lat_p,
+    #         llcrnrlon=lons2d[0, 0], llcrnrlat=lats2d[0, 0],
+    #         urcrnrlon=lons2d[-1, -1], urcrnrlat=lats2d[-1, -1], **kwargs)
+
+    lon0= rll.get_true_pole_coords_in_rotated_system()[0]
+    lon_0=rll.get_basemap_params()['lon_0']
+    o_lon_p=rll.get_basemap_params()['o_lon_p']
+    o_lat_p=rll.get_basemap_params()['o_lat_p']        
+    llcrnrlon=lons2d[0, 0]
+    llcrnrlat=lats2d[0, 0]
+    urcrnrlon=lons2d[-1, -1]
+    urcrnrlat=lats2d[-1, -1]
+
+    print 'lon0=',lon0     
+    print 'lon_0=',lon_0    
+    print 'o_lon_p=',o_lon_p  
+    print 'o_lat_p=',o_lat_p  
+    print 'llcrnrlon=',llcrnrlon
+    print 'llcrnrlat=',llcrnrlat
+    print 'urcrnrlon=',urcrnrlon
+    print 'urcrnrlat=',urcrnrlat
+    
     return b
