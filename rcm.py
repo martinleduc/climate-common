@@ -4,8 +4,8 @@ from mpl_toolkits.basemap import Basemap, cm
 from netCDF4 import Dataset as NetCDFFile
 import numpy as np
 import matplotlib.pyplot as plt
-from rpn.rpn import RPN
-from rpn.domains.rotated_lat_lon import RotatedLatLon
+#from rpn.rpn import RPN
+#from rpn.domains.rotated_lat_lon import RotatedLatLon
 import numpy as np
 
 def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
@@ -29,30 +29,53 @@ def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
         delbin=(dmax-dmin)/(clevs)
         clevs=np.arange(dmin,dmax+delbin,delbin)
     
-    
+
+    trim=1
     if lon[0,0] < -60.:
         domain='QC'
 
-        lon0= 83.0
-        lon_0= -97.0
-        o_lon_p= 180.0
-        o_lat_p= 42.5
-        llcrnrlon= 260.754
-        llcrnrlat= 30.1256
-        urcrnrlon= 333.256
-        urcrnrlat= 52.8049
+        if trim == 0:
+            lon0= 83.0
+            lon_0= -97.0
+            o_lon_p= 180.0
+            o_lat_p= 42.5
+            llcrnrlon= 260.754
+            llcrnrlat= 30.1256
+            urcrnrlon= 333.256
+            urcrnrlat= 52.8049
+
+        elif trim == 1:
+            lon0= 83.0
+            lon_0= -97.0
+            o_lon_p= 180.0
+            o_lat_p= 42.5
+            llcrnrlon= 266.204
+            llcrnrlat= 34.8294
+            urcrnrlon= 322.549
+            urcrnrlat= 52.6411
 
     else:
         domain='EU'
-        
-        lon0= -162.0
-        lon_0= -342.0
-        o_lon_p= 180.0
-        o_lat_p= 39.25
-        llcrnrlon= 350.983
-        llcrnrlat= 24.4208
-        urcrnrlon= 51.9427
-        urcrnrlat= 66.2037
+
+        if trim ==0:
+            lon0= -162.0
+            lon_0= -342.0
+            o_lon_p= 180.0
+            o_lat_p= 39.25
+            llcrnrlon= 350.983
+            llcrnrlat= 24.4208
+            urcrnrlon= 51.9427
+            urcrnrlat= 66.2037
+            
+        elif trim ==1:
+            lon0= -162.0
+            lon_0= -342.0
+            o_lon_p= 180.0
+            o_lat_p= 39.25
+            llcrnrlon= 353.8
+            llcrnrlat= 30.428
+            urcrnrlon= 37.9136
+            urcrnrlat= 63.4463
 
 
     m=Basemap(projection="rotpole", lon_0=lon0 - 180, o_lon_p=o_lon_p, o_lat_p=o_lat_p,
@@ -89,11 +112,13 @@ def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
 def getbasemapfromRPN(domain):
     '''Construct basemap object from raw model output file.'''
 
-    vname='MY'
+    vname='TT'
     if domain is 'QC':
-        path='/exec/leduc/ClimEx-TINV/kay/pm1950010100_00000000p'
+        #path='/exec/leduc/ClimEx-TINV/kay/pm1950010100_00000000p'
+        path='/exec/leduc/GRIDS-RPN/kda_dp_280x280'
     elif domain is 'EU':
-        path='/exec/leduc/ClimEx-TINV/kax/pm1950010100_00000000p'        
+        #path='/exec/leduc/ClimEx-TINV/kax/pm1950010100_00000000p'
+        path='/exec/leduc/GRIDS-RPN/kba_dp_280x280'        
 
 
     r = RPN(path)
