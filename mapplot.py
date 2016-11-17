@@ -33,7 +33,7 @@ def plotmap(lon,lat,data,units='',lims=[None,None,None],ax=None,proj='cyl',cmap=
     vmin=lims[0]
     vmax=lims[1]
 
-    cmap = plt.get_cmap(cmap)
+    cmap = cmap_discretize(plt.get_cmap(cmap),lims[2])
     #norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
     cs = m.pcolormesh(x, y, data, vmin=vmin, vmax=vmax, cmap=cmap)#, norm=norm)
     #cs = m.pcolormesh(x, y, data, cmap=cmap)
