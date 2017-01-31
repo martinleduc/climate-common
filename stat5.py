@@ -4,7 +4,7 @@ from IPython import embed
 
 
 def ergovar(data,pdeg,x=None):
-    '''Calculate the temporal variability of a 2-D field, also known as ergodic variance.'''
+    '''Calculate the temporal variability (ergodic variance) of 1D or 2D series.'''
     
     try: Nt,Ny,Nx=data.shape
     except: Nt,=data.shape        

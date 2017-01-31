@@ -81,10 +81,14 @@ def tsyear2clim(tts,data,y0,y1,dt):
 
     if (y1i+1 - y0i)%dt == 0:              # Check for integer num. of dt
         ndt=(y1i+1 - y0i)/dt
-        ny,nx=data2.shape[1],data2.shape[2]
         
         tts3=np.zeros(ndt)
-        data3=np.zeros((ndt,ny,nx))
+
+        if len(data2.shape)==3:
+            ny,nx=data2.shape[1],data2.shape[2]        
+            data3=np.zeros((ndt,ny,nx))
+        elif len(data2.shape)==1:
+            data3=np.zeros(ndt)
 
         for pp in range(ndt):
             tts3[pp]=y0+(pp+shift)*dt

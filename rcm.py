@@ -1,14 +1,15 @@
 from IPython import embed
+import matplotlib as mpl
 from mpl_toolkits.basemap import Basemap, cm
 # requires netcdf4-python (netcdf4-python.googlecode.com)
 from netCDF4 import Dataset as NetCDFFile
 import numpy as np
 import matplotlib.pyplot as plt
-#from rpn.rpn import RPN
-#from rpn.domains.rotated_lat_lon import RotatedLatLon
+from rpn.rpn import RPN
+from rpn.domains.rotated_lat_lon import RotatedLatLon
 import numpy as np
 
-def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
+def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet',tight=0):
     '''Plot RCMdata on a map where
     - data/lon/lat are 2D arrays of the same size
     - clevs: can be an integer for the number of contours between min and max or a list of values.'''
@@ -16,7 +17,14 @@ def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
 
     # create figure and axes instances
     fig = plt.figure(figsize=(8,8))
-    ax = fig.add_axes([0.1,0.1,0.8,0.8])
+
+    if tight==0:
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+
+    elif tight==1:
+        ax = fig.add_axes([0.,0.06,1,0.9])
+    #left=None, bottom=None, right=None, top=None, wspace=None, hspace=None
+
     # create polar stereographic Basemap instance.
 
     
@@ -82,20 +90,19 @@ def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
               llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat,
               urcrnrlon=urcrnrlon, urcrnrlat=urcrnrlat)
 
-    #m = getbasemapfromRPN(domain)
-
     # draw coastlines, state and country boundaries, edge of map.
-    m.drawcoastlines()
+    m.drawcoastlines(linewidth=2)
     #m.drawstates()
     #m.drawcountries()
 
 
-    # draw parallels.
-    parallels = np.arange(0.,90,10.)
-    m.drawparallels(parallels,labels=[1,0,0,0],fontsize=10)
-    # draw meridians
-    meridians = np.arange(180.,360.,10.)
-    m.drawmeridians(meridians,labels=[0,0,0,1],fontsize=10)
+    if tight==0:
+        # draw parallels.
+        parallels = np.arange(0.,90,10.)
+        m.drawparallels(parallels,labels=[1,0,0,0],fontsize=16)
+        # draw meridians
+        meridians = np.arange(180.,360.,10.)
+        m.drawmeridians(meridians,labels=[0,0,0,1],fontsize=16)
 
     ny = data.shape[0]; nx = data.shape[1]
     x, y = m(lon, lat) # compute map proj coordinates.
@@ -105,20 +112,35 @@ def plotrcm(data,lon,lat,clevs=10,units='',title='',cmap='jet'):
     cbar.set_label('('+units+')')
     # add title
     plt.title(title)
+
     plt.show()
 
 
 
-def getbasemapfromRPN(domain):
-    '''Construct basemap object from raw model output file.'''
+def getbasemapfromRPN(path,vname='TT'):
+    '''Construct basemap object from raw model output file.
 
-    vname='TT'
-    if domain is 'QC':
-        #path='/exec/leduc/ClimEx-TINV/kay/pm1950010100_00000000p'
-        path='/exec/leduc/GRIDS-RPN/kda_dp_280x280'
-    elif domain is 'EU':
-        #path='/exec/leduc/ClimEx-TINV/kax/pm1950010100_00000000p'
-        path='/exec/leduc/GRIDS-RPN/kba_dp_280x280'        
+    Examples of path:
+
+    /exec/leduc/GRIDS-RPN/kda_dp_280x280
+    /exec/leduc/GRIDS-RPN/kba_dp_280x280
+    
+    '''
+
+
+    #vname='TT'
+    # if domain is 'QC':
+    #     #path='/exec/leduc/ClimEx-TINV/kay/pm1950010100_00000000p'
+    #     path='/exec/leduc/GRIDS-RPN/kda_dp_280x280'
+    # elif domain is 'EU':
+    #     #path='/exec/leduc/ClimEx-TINV/kax/pm1950010100_00000000p'
+    #     path='/exec/leduc/GRIDS-RPN/kba_dp_280x280'        
+
+
+
+
+
+
 
 
     r = RPN(path)

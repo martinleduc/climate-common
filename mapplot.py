@@ -13,8 +13,9 @@ from IPython import embed
 ################################################################################
 
 
-def plotmap(lon,lat,data,units='',lims=[None,None,None],ax=None,proj='cyl',cmap='jet',cbon=1,crnrs=None,nticks=None):
-    '''Plot a map of data (2D) with lon and lat given as arrays. Corners of the map are set according to coordinates or with crnrs = [llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat]'''
+def plotmap(lon,lat,data,units='',lims=[None,None],ax=None,proj='cyl',cmap='jet',cbon=1,crnrs=None,nticks=None):
+    '''Plot a map of data (2D) with lon and lat given as arrays. Corners of the map are set according to coordinates or with crnrs = [llcrnrlon,llcrnrlat,urcrnrlon,urcrnrlat] and value range by lims[vmin,vmax]
+    '''
 
     f=plt.figure(figsize=(8,4))
     f.subplots_adjust(left=0.02,right=0.88,top=0.95,bottom=0.0)
